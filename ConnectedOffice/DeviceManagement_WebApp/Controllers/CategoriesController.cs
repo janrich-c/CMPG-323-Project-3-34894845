@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
+using DeviceManagement_WebApp.Repository;
 
 namespace DeviceManagement_WebApp.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly ConnectedOfficeContext _context;
+        private CategoryRepository _categoryRepository = new CategoryRepository();
 
         public CategoriesController(ConnectedOfficeContext context)
         {
@@ -22,7 +24,8 @@ namespace DeviceManagement_WebApp.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Category.ToListAsync());
+            var categories = await _categoryRepository.GetAll();
+            return View(categories);
         }
 
         // GET: Categories/Details/5
@@ -33,8 +36,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Category
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            var category = await _categoryRepository.GetDetails(id);
             if (category == null)
             {
                 return NotFound();
@@ -56,9 +58,7 @@ namespace DeviceManagement_WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
         {
-            category.CategoryId = Guid.NewGuid();
-            _context.Add(category);
-            await _context.SaveChangesAsync();
+            var NewCategory = await _categoryRepository.Create(category);
             return RedirectToAction(nameof(Index));
         }
 
@@ -69,8 +69,7 @@ namespace DeviceManagement_WebApp.Controllers
             {
                 return NotFound();
             }
-
-            var category = await _context.Category.FindAsync(id);
+            var category = await _categoryRepository.GetDetails(id);
             if (category == null)
             {
                 return NotFound();
@@ -83,7 +82,7 @@ namespace DeviceManagement_WebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
+        public IActionResult Edit(Guid id, [Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
         {
             if (id != category.CategoryId)
             {
@@ -91,8 +90,7 @@ namespace DeviceManagement_WebApp.Controllers
             }
             try
             {
-                _context.Update(category);
-                await _context.SaveChangesAsync();
+                _categoryRepository.Edit(id, category);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -115,9 +113,7 @@ namespace DeviceManagement_WebApp.Controllers
             {
                 return NotFound();
             }
-
-            var category = await _context.Category
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            var category = await _categoryRepository.GetDetails(id);
             if (category == null)
             {
                 return NotFound();
@@ -129,17 +125,15 @@ namespace DeviceManagement_WebApp.Controllers
         // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            var category = await _context.Category.FindAsync(id);
-            _context.Category.Remove(category);
-            await _context.SaveChangesAsync();
+            _categoryRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(Guid id)
         {
-            return _context.Category.Any(e => e.CategoryId == id);
+            return _categoryRepository.CategoryExists(id);
         }
     }
 }

@@ -29,10 +29,10 @@ namespace DeviceManagement_WebApp
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("ConnStr")));
+                    Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<ConnectedOfficeContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("ConnStr")));
+                    Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
