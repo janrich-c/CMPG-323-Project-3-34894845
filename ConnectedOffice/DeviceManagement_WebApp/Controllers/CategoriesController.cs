@@ -13,13 +13,9 @@ namespace DeviceManagement_WebApp.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ConnectedOfficeContext _context;
         private CategoryRepository _categoryRepository = new CategoryRepository();
 
-        public CategoriesController(ConnectedOfficeContext context)
-        {
-            _context = context;
-        }
+
 
         // GET: Categories
         public async Task<IActionResult> Index()
