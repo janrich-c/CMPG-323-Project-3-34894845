@@ -78,7 +78,7 @@ namespace DeviceManagement_WebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
+        public async Task<IActionResult> Edit(Guid id, [Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
         {
             if (id != category.CategoryId)
             {
@@ -86,7 +86,7 @@ namespace DeviceManagement_WebApp.Controllers
             }
             try
             {
-                _categoryRepository.Edit(id, category);
+                await _categoryRepository.Edit(id, category);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -121,9 +121,9 @@ namespace DeviceManagement_WebApp.Controllers
         // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            _categoryRepository.Delete(id);
+            await _categoryRepository.DeleteConfirmed(id);
             return RedirectToAction(nameof(Index));
         }
 

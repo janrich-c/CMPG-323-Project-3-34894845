@@ -34,13 +34,13 @@ namespace DeviceManagement_WebApp.Repository
             return category;
         }
         // POST: Categories/Edit/5
-        public async void Edit(Guid id, [Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
+        public async Task Edit(Guid id, [Bind("CategoryId,CategoryName,CategoryDescription,DateCreated")] Category category)
         {
               _context.Update(category);
                 await _context.SaveChangesAsync();
         }
         // POST: Categories/Delete/5
-        public async void Delete(Guid id)
+        public async Task DeleteConfirmed(Guid id)
         {
             var category = await _context.Category.FindAsync(id);
             _context.Category.Remove(category);

@@ -38,14 +38,14 @@ namespace DeviceManagement_WebApp.Repository
         }
 
         // POST: Zones/Edit/5
-        public async void Edit(Guid id, [Bind("ZoneId,ZoneName,ZoneDescription,DateCreated")] Zone zone)
+        public async Task Edit(Guid id, [Bind("ZoneId,ZoneName,ZoneDescription,DateCreated")] Zone zone)
         {
                 _context.Update(zone);
                 await _context.SaveChangesAsync();
         }
 
         // POST: Zones/Delete/5
-        public async void Delete(Guid id)
+        public async Task DeleteConfirmed(Guid id)
         {
             var zone = await _context.Zone.FindAsync(id);
             _context.Zone.Remove(zone);
