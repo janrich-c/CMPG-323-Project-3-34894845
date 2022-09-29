@@ -78,7 +78,8 @@ namespace DeviceManagement_WebApp.Controllers
         }
 
         // POST: Devices/Edit/5
-       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("DeviceId,DeviceName,CategoryId,ZoneId,Status,IsActive,DateCreated")] Device device)
         {
             if (id != device.DeviceId)
